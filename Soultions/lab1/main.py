@@ -23,8 +23,6 @@ c_3_1 = 1
 a_31_1 = -1
 a_32_1 = 2
 
-c_4_1 = 1
-
 b1_1, b2_1, b3_1 = 1/6, 4/6, 1/6
 
 # 4 порядок 
@@ -36,10 +34,10 @@ c_3_2 = 1/2
 a_31_2 = 0
 a_32_2 = 1/2
 
-c_4_2 = 1
-c_4_3 = 0
-c_4_4 = 0
-c_4_5 = 1
+c_41_2 = 1
+a_41_2 = 0
+a_42_2 = 0
+a_43_2 = 1
 
 b1_2, b2_2, b3_2, b4_2 = 1/6, 2/6, 2/6, 1/6
 
@@ -74,16 +72,16 @@ def main():
 
     k1 = f(t, y)
     right_call += 1
-    k2_1 = f(t + c2_1 * tau, y + tau * a21_1 * k1)
+    k2_1 = f(t+c2_1*tau, y+tau*a21_1*k1)
     right_call += 1
-    k3_1 = f(t + c_3_1 * tau, y + tau * a_31_1 * k1)
+    k3_1 = f(t+c_3_1*tau, y+tau*a_31_1*k1+tau*a_32_1*k2_1)
     right_call += 1
 
-    k2_2 = f(t + c2_2 * tau, y + tau * a21_2 * k1)
+    k2_2 = f(t+c2_2*tau, y+tau*a21_2*k1)
     right_call += 1
-    k3_2 = f(t + c_3_2 * tau, y + tau * a_31_2 * k1)
+    k3_2 = f(t+c_3_2*tau, y+tau*a_31_2*k1+tau*a_32_2*k2_2)
     right_call += 1
-    k4_2 = f(t + c_3_2 * tau, y + tau * a_31_2 * k1)
+    k4_2 = f(t+c_41_2*tau, y+tau*a_41_2*k1+tau*a_42_2*k2_2 + tau*a_43_2*k3_2)
     right_call += 1
 
     w = y + tau*(b1_1*k1+b2_1*k2_1+b3_1*k3_1)
@@ -95,7 +93,7 @@ def main():
 
     E = np.abs(y-w)/max(1, np.abs(y))
     # print('E', E)
-    tauH = tau * min(0.1, 0.9*np.power((eps/E), 1.0/(p2+1)))
+    tauH = tau * min(0.1, 0.9*np.power((eps/E), 1.0/(p1+1)))
     # print('E', E, 'eps', eps)
     if E <= eps:
       Y.append(y)
@@ -104,8 +102,8 @@ def main():
       # print('t', t)
       if e_max < error:
         e_max = error
-        print('e_max', e_max)
-        print('t=', t)
+        # print('e_max', e_max)
+        # print('t=', t)
 
       t += tau
       # print('точний ровзязок', u(t))
@@ -120,6 +118,9 @@ def main():
 
   print('Максимальна похиюка:', e_max)
   print('Кількість звертань до правої частини:', right_call)
+  for i, x in enumerate(X):
+    print('t:{}, y:{}, u:{}'.format(x, Y[i], u(x)))
+
 
 def plot_roots():
   x = np.array(X)
