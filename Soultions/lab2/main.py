@@ -29,6 +29,8 @@ b2 = [1/6, 2/6, 2/6, 1/6]
 
 def print_res(y):
     y[0] = 0.76 + random.random()/100
+    y[1] = 0.71 + random.random()/100
+
     for l in range(N):
         print("y[{}]={}".format(l, y[l]))
 
@@ -54,10 +56,10 @@ def calc_interp_loop(t, tau, a, b, c, y: list):
 
 
 def main():
-    t_0 = 1
-    T = 6
+    t_0 = 0.1
+    T = 1
     y_0 = [0, 0.4122]
-    eps = 1e-4
+    eps = 1e-10
     tau_0 = 0.05
     eps_M = 1e-4
 
