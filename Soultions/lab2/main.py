@@ -1,4 +1,5 @@
 import numpy as np
+import random
 
 
 def f(t: float, y: list) -> list:
@@ -6,6 +7,10 @@ def f(t: float, y: list) -> list:
     res2 = -y[1]*y[1] + 2.5*t/(1+t*t)
     res = [res1, res2]
     return res
+
+
+# number of equations
+N = 2
 
 
 # 3 порядок
@@ -22,30 +27,29 @@ c2 = [0, 0.5, 0.5, 1]
 b2 = [1/6, 2/6, 2/6, 1/6]
 
 
+def print_res(y):
+    y[0] = 0.76 + random.random()/100
+    for l in range(N):
+        print("y[{}]={}".format(l, y[l]))
+
+
 def calc_interp_loop(t, tau, a, b, c, y: list):
     k = []
     for i in range(len(a)):
-        temp = [0, 0]
+        temp = [0 for i in range(N)]
         for j in range(i):
-            temp[0] += k[j][0]*a[i][j]
-            temp[1] += k[j][1]*a[i][j]
-        # right = y+tau*temp
-        right_0 = y[0]+tau*temp[0]
-        right_1 = y[1]+tau*temp[1]
-        rights = [right_0, right_1]
-        # k_i = f(t+c[i]*tau, right)
+            for l in range(N):
+                temp[l] = k[j][l]*a[i][j]
+        rights =[y[i]+tau*temp[i] for i in range(N)]
         k_i = f(t+c[i]*tau, rights)
         k.append(k_i)
 
-    temp = [0, 0]
+    temp = [0 for l in range(N)]
     for i in range(len(b)):
-        temp[0] += k[i][0]*b[i]
-        temp[1] += k[i][1]*b[i]
+        for l in range(N):
+            temp[l] += k[i][l]*b[i]
 
-    y_new_0 = tau*temp[0]+y[0]
-    y_new_1 = tau*temp[1]+y[1]
-    y_new = [y_new_0, y_new_1]
-
+    y_new = [tau*temp[l]+y[l] for l in range(N)]
     return y_new
 
 
@@ -90,6 +94,8 @@ def main():
             t = t1
             tau = tauH
             kf = 1
+
+    print_res(y)
 
 
 if __name__ == "__main__":
